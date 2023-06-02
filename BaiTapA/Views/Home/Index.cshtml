@@ -1,33 +1,63 @@
-﻿@{
+﻿@model IEnumerable<BaiTapA.Models.Course>
+@{
     ViewBag.Title = "Home Page";
 }
 
-<main>
-    <section class="row" aria-labelledby="aspnetTitle">
-        <h1 id="title">ASP.NET</h1>
-        <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-        <p><a href="https://asp.net" class="btn btn-primary btn-md">Learn more &raquo;</a></p>
-    </section>
+<div class="row">
+    <ul>
+        @foreach(var i in Model)
+            {
+                <li class="list-group-item course position-relative mb-4 border-0">
+                    <div class="text-center text-white rounded" style="background-color: #d41d50; width: 60px;">
+                        <div class="month">
+                            @i.DateTime.ToString("MM")
+                        </div>
+                        <div class="day">
+                            @i.DateTime.ToString("dd")
+                        </div>
+                    </div>
+                    <div class="details position-absolute" style="top:13px; left: 90px;">
+                        <span class="lecturer">
+                            @i.Lecturer.Name
+                            <button class="btn btn-primary btn-sm js-toggle-follow" data-user-id="@i.LecturerId">Follow</button>
+                        </span>
+                        <span class="category">
+                            @i.Category.Name
+                        </span>
+                        <button data-course-id="@i.Id" class="btn btn-secondary btn-sm js-toggle-attendance">Going ?</button>
+                    </div>
+                </li>
+            }
+    </ul>
 
-    <div class="row">
-        <section class="col-md-4" aria-labelledby="gettingStartedTitle">
-            <h2 id="gettingStartedTitle">Getting started</h2>
-            <p>
-                ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-                enables a clean separation of concerns and gives you full control over markup
-                for enjoyable, agile development.
-            </p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-        </section>
-        <section class="col-md-4" aria-labelledby="librariesTitle">
-            <h2 id="librariesTitle">Get more libraries</h2>
-            <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-        </section>
-        <section class="col-md-4" aria-labelledby="hostingTitle">
-            <h2 id="hostingTitle">Web Hosting</h2>
-            <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-        </section>
-    </div>
-</main>
+    @section scripts
+    {
+        <script>
+            $(document).ready(function () {
+                $(".js-toggle-attendance").click(function (e) {
+                    var button = $(e.target);
+                    $post("/api/attendances", { courseId: button.attr("data-course-id") })
+                        .done(function () {
+                            button
+                                .removeClass("btn-secondary")
+                                .addClass("btn-info")
+                                .text("Going")
+                        })
+                        .fail(function () {
+                            alert("Something failed!");
+                        });
+                });
+                $(".js-toggle-follow").click(function (e) {
+                    var button = $(e.target);
+                    $.post("/api/followings", { followeeId: button.attr("data-user-id") })
+                        .done(function () {
+                            button.text("Following");
+                        })
+                        .fail(function () {
+                            alert("Something failed!");
+                        });
+                });
+            });
+        </script>
+    }
+</div>

@@ -19,7 +19,12 @@ namespace BaiTapA.Controllers
 
         public ActionResult Index()
         {
-            return View();
+            var upComingCourses = _dbContext.Courses
+                .Include(c => c.Lecturer)
+                .Include(c => c.Category)
+                .Where(c => c.DateTime > DateTime.Now);
+
+            return View(upComingCourses);
         }
 
         public ActionResult About()

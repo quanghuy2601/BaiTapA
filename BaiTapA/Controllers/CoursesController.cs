@@ -12,7 +12,6 @@ namespace BaiTapA.Controllers
 {
     public class CoursesController : Controller
     {
-        // heheh
         private readonly ApplicationDbContext _dbContext;
 
         public CoursesController()
@@ -21,6 +20,7 @@ namespace BaiTapA.Controllers
         }
 
         // GET: Courses
+        [Authorize]
         public ActionResult Create()
         {
             var viewModel = new CourseViewModel
