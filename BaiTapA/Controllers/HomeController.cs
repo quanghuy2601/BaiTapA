@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Data.Entity;
+using BaiTapA.ViewModels;
 
 namespace BaiTapA.Controllers
 {
@@ -24,7 +25,13 @@ namespace BaiTapA.Controllers
                 .Include(c => c.Category)
                 .Where(c => c.DateTime > DateTime.Now);
 
-            return View(upComingCourses);
+            var viewModel = new CoursesViewModel
+            {
+                UpcomingCourses = upComingCourses,
+                ShowAction = User.Identity.IsAuthenticated
+            };
+
+            return View(viewModel);
         }
 
         public ActionResult About()

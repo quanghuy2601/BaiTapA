@@ -1,6 +1,6 @@
 ﻿@model BaiTapA.ViewModels.CoursesViewModel
 @{
-    ViewBag.Title = "Home Page";
+    ViewBag.Title = "Attending";
 }
 
 <div class="row pt-3">
@@ -16,7 +16,7 @@
                         @i.DateTime.ToString("dd")
                     </div>
                 </div>
-                <div class="details position-absolute" style="top:20px; left: 100px;">
+                <div class="details position-absolute" style="top:4px; left: 100px;">
                     <span class="lecturer">
                         @i.Lecturer.Name
                         @if (Model.ShowAction)
@@ -25,13 +25,14 @@
 
                         }
                     </span>
+                    <br />
                     <span class="category">
                         @i.Category.Name
+                        @if (Model.ShowAction)
+                        {
+                            <button data-course-id="@i.Id" class="btn btn-secondary btn-sm js-toggle-attendance ms-1">Going?</button>
+                        }
                     </span>
-                    @if (Model.ShowAction)
-                    {
-                        <button data-course-id="@i.Id" class="btn btn-secondary btn-sm js-toggle-attendance ms-2">Going?</button>
-                    }
                 </div>
             </li>
         }

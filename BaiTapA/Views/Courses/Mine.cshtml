@@ -1,0 +1,51 @@
+﻿﻿@model IEnumerable<BaiTapA.Models.Course>
+@{
+    ViewBag.Title = "Mine";
+}
+
+<h2>Mine</h2>
+<ul class="list-group">
+    @foreach (var course in Model)
+    {
+        <li class="list-group-item course position-relative mb-4 border-0">
+            <div class="text-center text-white rounded" style="background-color: #d41d50; width: 60px;">
+                <div class="month">@course.DateTime.ToString("MM")</div>
+                <div class="day">@course.DateTime.ToString("dd")</div>
+            </div>
+            <div class="details position-absolute" style="top:10px; left: 100px;">
+                <span class="lecturer">@course.Lecturer.Name</span>
+                <span class="category">@course.Category.Name</span>
+            </div>
+            <div class="action position-absolute" style="top: 34px; left: 100px;">
+                <a href="@Url.Action("Edit", "Courses", new {id = course.Id})" class="text-decoration-none text-success">Edit</a> |
+                <a href="@Url.Action("Cancel", "Courses", new {id = course.Id})" class="text-decoration-none text-success js-cancel-course" data-course-id="@course.Id">Delete</a>
+            </div>
+        </li>
+    }
+</ul>
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            $(".js-cancel-course").click(function (e) {
+                e.preventDefault();
+                const link = $(this);
+                bootbox.confirm("Are you sure to cancel?", function () {
+                    $.ajax({
+                        url: "/Api/CoursesController/" + link.attr("data-course-id"),
+                        method: "DELETE"
+                    })
+                        .done(function () {
+                            link.parents("li").fadeOut(function () {
+                                $(this).remove();
+                            });
+                        })
+                        .fail(function () {
+                            alert("Something failed!");
+                        });
+                });
+            });
+        });
+    </script>
+}
